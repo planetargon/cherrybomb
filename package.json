@@ -9,13 +9,15 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onCommand:extension.tagTechDebt"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "cherrybomb.helloWorld",
-        "title": "Hello World"
+        "command": "extension.tagTechDebt",
+        "title": "Tag Tech Debt"
       }
     ]
   },

@@ -1,22 +1,56 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
+import { createIssue, getJiraProjects } from './jiraService';
 import * as vscode from 'vscode';
+import * as path from 'path';
+import * as dotenv from 'dotenv';
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+	// on activation, gets all jira projects and makes them available to tagTechDebt extension using getJiraProjects
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "cherrybomb" is now active!');
+	const envPath = path.join(context.extensionPath, '.env');
+	const result = dotenv.config({ path: envPath });
+	if (result.error) {
+		console.error('Error loading .env file:', result.error);
+	  } else {
+		console.log('Environment variables loaded:', result.parsed.JIRA_DOMAIN);
+	  }
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('cherrybomb.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from CherryBomb!');
+	  const jiraDomain = process.env.JIRA_DOMAIN;
+	  const email = process.env.JIRA_EMAIL;
+	  const apiToken = process.env.JIRA_API_TOKEN;
+	
+	const disposable = vscode.commands.registerCommand('extension.tagTechDebt', async () => {
+
+		// project selection 
+		// // user selects jira project from selection dropdown provided by getJiraProjects function
+
+		const editor = vscode.window.activeTextEditor;
+		if (!editor) {
+			vscode.window.showErrorMessage("No active editor found. Please open a file.");
+			return;
+		}
+
+		const selection = editor.selection;
+		if (selection.isEmpty) {
+			vscode.window.showErrorMessage("Please select some code to tag as technical debt");
+			return;
+		};
+
+		const selectedText = editor.document.getText(selection);
+
+		const issueSummary = await vscode.window.showInputBox({
+			prompt: "Enter a description for this Jira issue",
+			placeHolder: "Technical debt tag"
+		});
+
+		if (!issueSummary) {
+			vscode.window.showErrorMessage("You must enter a summary to create a Jira issue");
+			return;
+		};
+
+		createIssue(issueSummary, jiraDomain, email, apiToken);
+
+		//
+		vscode.window.showInformationMessage('Selected text:', selectedText);
 	});
 
 	context.subscriptions.push(disposable);
