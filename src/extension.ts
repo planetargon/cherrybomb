@@ -37,17 +37,44 @@ export function activate(context: vscode.ExtensionContext) {
 
 		const selectedText = editor.document.getText(selection);
 
-		const issueSummary = await vscode.window.showInputBox({
+		//issue title
+		const title = await vscode.window.showInputBox({
+			prompt: "Enter a title for this Jira issue",
+			placeHolder: "Technical debt tag"
+		});
+
+		if (!title) {
+			vscode.window.showErrorMessage("You must enter a title to create a Jira issue");
+			return;
+		};
+
+		//issue description
+		const description = await vscode.window.showInputBox({
 			prompt: "Enter a description for this Jira issue",
 			placeHolder: "Technical debt tag"
 		});
 
-		if (!issueSummary) {
-			vscode.window.showErrorMessage("You must enter a summary to create a Jira issue");
+		//file name and line numbers where this code comes from
+		const filePath = editor.document.fileName;
+		const folder = vscode.workspace.getWorkspaceFolder(editor.document.uri);
+		if (!folder) {
+			vscode.window.showErrorMessage("File is not in a workspace.");
+			return filePath; 
+		  }
+		const folderPath = folder.uri.fsPath;
+		const relativePath = path.relative(folderPath, filePath);
+		const filePathName = path.join(path.basename(folderPath), relativePath);
+
+		console.log('filePath', filePathName);
+
+		//selectedText
+
+		if (!description) {
+			vscode.window.showErrorMessage("You must enter a description to create a Jira issue");
 			return;
 		};
 
-		createIssue(issueSummary, jiraDomain, email, apiToken);
+		createIssue(title, description, filePathName, jiraDomain, email, apiToken);
 
 		//
 		vscode.window.showInformationMessage('Selected text:', selectedText);

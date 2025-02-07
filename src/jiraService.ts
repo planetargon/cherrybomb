@@ -19,13 +19,15 @@ export const getJiraProjects = async () => {
         const activeProjects = response.data.values.filter((project) => {
             return project.projectCategory && project.projectCategory.id === '10101';
         })
+
+        //map to get just the project keys
         return activeProjects;
     } catch (error) {
         console.error('Error fetching projects:', error.response ? error.response.data : error.message);
     }
 }
 
-export const createIssue = async (description, jiraDomain, email, apiToken) => {    
+export const createIssue = async (title, description, filePathName, jiraDomain, email, apiToken) => {    
     const url = `${jiraDomain}/rest/api/3/issue`;
     console.log('url', url);
     
@@ -35,19 +37,23 @@ export const createIssue = async (description, jiraDomain, email, apiToken) => {
       project: {
         key: projectKey
       },
-      summary: description,
+      summary: title,
       description: {
         type: "doc", 
         version: 1,  
         "content": [
           {
+            "type": "paragraph",
             "content": [
-              {
-                "text": description,
-                "type": "text"
-              }
-            ],
-            "type": "paragraph"
+                {
+                    type: "text",
+                    text: description
+                },
+                {
+                    type: "text",
+                    text: `This tag is located: ${filePathName}`
+                }
+            ]
           }
         ],
       },
@@ -56,7 +62,7 @@ export const createIssue = async (description, jiraDomain, email, apiToken) => {
       },
       labels: [
         'tech_debt',
-        'bug',
+        'via_cherrybomb'
       ]
     }
   };
