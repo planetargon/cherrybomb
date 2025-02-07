@@ -7,7 +7,7 @@ export function activate(context: vscode.ExtensionContext) {
 	  
 	  const disposable = vscode.commands.registerCommand('extension.tagTechDebt', async () => {
 		const jiraProjectKeys = await getJiraProjects();
-		
+
 		const editor = vscode.window.activeTextEditor;
 		if (!editor) {
 			vscode.window.showErrorMessage("No active editor found. Please open a file.");
@@ -31,6 +31,9 @@ export function activate(context: vscode.ExtensionContext) {
 		};
 
 		const selectedText = editor.document.getText(selection);
+		const startLine = selection.start.line;
+		const endLine = selection.end.line;
+		const lineSpan = `This selection begins on line ${startLine} and ends on line ${endLine}`;
 
 		//issue title
 		const title = await vscode.window.showInputBox({
@@ -60,16 +63,13 @@ export function activate(context: vscode.ExtensionContext) {
 		const relativePath = path.relative(folderPath, filePath);
 		const filePathName = path.join(path.basename(folderPath), relativePath);
 
-		console.log('filePath', filePathName);
-
-		//selectedText
 
 		if (!description) {
 			vscode.window.showErrorMessage("You must enter a description to create a Jira issue");
 			return;
 		};
 
-		// createIssue(title, description, filePathName, selectedProject);
+		createIssue(title, description, filePathName, selectedProject, selectedText, lineSpan);
 
 		//
 		vscode.window.showInformationMessage('Selected text:', selectedText);

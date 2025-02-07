@@ -43,37 +43,64 @@ export const getJiraProjects = async () => {
     }
 }
 
-export const createIssue = async (title, description, filePathName, ) => {    
+export const createIssue = async (title, description, filePathName, selectedProject, selectedText, lineSpan) => {    
     const url = `${jiraDomain}/rest/api/3/issue`;
-    console.log('url', url);
+
+    const formattedDescription = {
+        type: "doc",
+        version: 1,
+        content: [
+          {
+            type: "paragraph",
+            content: [
+              {
+                type: "text",
+                text: description
+            },
+            ]
+          },
+          {
+            type: "paragraph",
+            content: [
+              {
+                type: "text",
+                text: `This tag is located in: ${filePathName}`
+            }
+            ]
+          },
+          {
+            type: "paragraph",
+            content: [
+              {
+                type: "text",
+                text: lineSpan
+              }
+            ]
+          },
+          {
+            type: "paragraph",
+            content: [
+              {
+                type: "text",
+                text: `Tagged code: ${selectedText}`
+              }
+            ]
+          }
+        ]
+      };
     
   const issueData = {
     fields: {
       project: {
-        key: projectKey
+        key: selectedProject.label
       },
+      fixVersions: [
+        {"name":"retainer"}
+      ],
       summary: title,
-      description: {
-        type: "doc", 
-        version: 1,  
-        "content": [
-          {
-            "type": "paragraph",
-            "content": [
-                {
-                    type: "text",
-                    text: description
-                },
-                {
-                    type: "text",
-                    text: `This tag is located: ${filePathName}`
-                }
-            ]
-          }
-        ],
-      },
+      description: formattedDescription,
       issuetype: {
-        id: '11236' 
+        name: 'Bug' 
       },
       labels: [
         'tech_debt',
