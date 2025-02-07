@@ -1,8 +1,19 @@
 const axios = require('axios');
+import * as path from 'path';
+import * as dotenv from 'dotenv';
 
+// Adjust the path as necessary so that it correctly locates your .env file
+dotenv.config({ path: path.join(__dirname, '../.env') });
 
-
+const jiraDomain = process.env.JIRA_DOMAIN;
 const projectKey = 'INTERNS';
+const email = process.env.JIRA_EMAIL;
+const apiToken = process.env.JIRA_API_TOKEN;
+const auth = Buffer.from(`${email}:${apiToken}`).toString('base64');
+
+if (!jiraDomain || !email || !apiToken) {
+  throw new Error('Missing Jira configuration in your .env file.');
+}
 
 
 export const getJiraProjects = async () => {
@@ -20,18 +31,22 @@ export const getJiraProjects = async () => {
             return project.projectCategory && project.projectCategory.id === '10101';
         })
 
-        //map to get just the project keys
-        return activeProjects;
+        const projectKeys = activeProjects.map((project) => {
+            return {
+                label: project.key,
+                description: project.name
+            };
+        })
+        return projectKeys;
     } catch (error) {
         console.error('Error fetching projects:', error.response ? error.response.data : error.message);
     }
 }
 
-export const createIssue = async (title, description, filePathName, jiraDomain, email, apiToken) => {    
+export const createIssue = async (title, description, filePathName, ) => {    
     const url = `${jiraDomain}/rest/api/3/issue`;
     console.log('url', url);
     
-    const auth = Buffer.from(`${email}:${apiToken}`).toString('base64');
   const issueData = {
     fields: {
       project: {
