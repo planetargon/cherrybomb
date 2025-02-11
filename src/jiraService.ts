@@ -6,7 +6,6 @@ import { AxiosError } from 'axios';
 dotenv.config({ path: path.join(__dirname, '../.env') });
 
 const jiraDomain = process.env.JIRA_DOMAIN;
-const projectKey = 'INTERNS';
 const email = process.env.JIRA_EMAIL;
 const apiToken = process.env.JIRA_API_TOKEN;
 const auth = Buffer.from(`${email}:${apiToken}`).toString('base64');
