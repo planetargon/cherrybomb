@@ -78,8 +78,14 @@ export const getJiraProjects = async () => {
             };
         })
         return projectKeys;
-    } catch (error: any) {
-        console.error('Error fetching projects:', error.response ? error.response.data : error.message);
+    } catch (error: unknown) {
+        if (axios.isAxiosError(error) && error.response) {
+            console.error('Error fetching projects:', error.response.data);
+        } else if (error instanceof Error) {
+            console.error('Error fetching projects:', error.message);
+        } else {
+            console.error('Error fetching projects:', error);
+        }
     }
 }
 
