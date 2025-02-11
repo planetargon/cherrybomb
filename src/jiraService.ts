@@ -195,7 +195,13 @@ export const createIssue = async (
       }
     });
     console.log('Issue created successfully:', response.data);
-  } catch (error: any) {
-    console.error('Error creating issue:', error.response ? error.response.data : error.message);
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error) && error.response) {
+      console.error('Error creating issue:', error.response.data);
+    } else if (error instanceof Error) {
+      console.error('Error creating issue:', error.message);
+    } else {
+      console.error('Error creating issue:', error);
+    }
   }
 }
