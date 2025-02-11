@@ -1,6 +1,7 @@
 const axios = require('axios');
 import * as path from 'path';
 import * as dotenv from 'dotenv';
+import { AxiosError } from 'axios';
 
 dotenv.config({ path: path.join(__dirname, '../.env') });
 
@@ -79,8 +80,8 @@ export const getJiraProjects = async () => {
         })
         return projectKeys;
     } catch (error: unknown) {
-        if (axios.isAxiosError(error) && error.response) {
-            console.error('Error fetching projects:', error.response.data);
+        if (axios.isAxiosError(error) && (error as AxiosError).response) {
+        console.error('Error creating issue:', (error as AxiosError).response?.data);
         } else if (error instanceof Error) {
             console.error('Error fetching projects:', error.message);
         } else {
@@ -196,8 +197,8 @@ export const createIssue = async (
     });
     console.log('Issue created successfully:', response.data);
   } catch (error: unknown) {
-    if (axios.isAxiosError(error) && error.response) {
-      console.error('Error creating issue:', error.response.data);
+    if (axios.isAxiosError(error) && (error as AxiosError).response) {
+      console.error('Error creating issue:', (error as AxiosError).response?.data);
     } else if (error instanceof Error) {
       console.error('Error creating issue:', error.message);
     } else {
