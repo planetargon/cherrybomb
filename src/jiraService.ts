@@ -117,7 +117,7 @@ export const createIssue = async (title, description, filePathName, selectedProj
   const issueData = {
     fields: {
       project: {
-        key: selectedProject.label
+        key: selectedProject
       },
       fixVersions: [
         {"name":"via_cherrybomb"}
