@@ -1,6 +1,6 @@
 {
   "name": "cherrybomb",
-  "displayName": "CherryBomb",
+  "displayName": "cherrybomb",
   "description": "",
   "version": "0.0.1",
   "engines": {
@@ -9,13 +9,13 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [ "*" ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "cherrybomb.helloWorld",
-        "title": "Hello World"
+        "command": "extension.tagTechDebt",
+        "title": "Tag Tech Debt"
       }
     ]
   },
@@ -45,6 +45,7 @@
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
+    "@vscode/codicons": "^0.0.36",
     "axios": "^1.7.9",
     "dotenv": "^16.4.7"
   }
