@@ -55,6 +55,11 @@ export const createIssue = async (title, description, filePathName, selectedProj
             content: [
               {
                 type: "text",
+                text: "Description: ",
+                marks: [{ type: "strong" }]
+              },
+              {
+                type: "text",
                 text: description
             },
             ]
@@ -62,6 +67,11 @@ export const createIssue = async (title, description, filePathName, selectedProj
           {
             type: "paragraph",
             content: [
+              {
+                type: "text",
+                text: "File Location: ",
+                marks: [{ type: "strong" }]
+              },
               {
                 type: "text",
                 text: `This tag is located in: ${filePathName}`
@@ -73,6 +83,11 @@ export const createIssue = async (title, description, filePathName, selectedProj
             content: [
               {
                 type: "text",
+                text: "Linespan: ",
+                marks: [{ type: "strong" }]
+              },
+              {
+                type: "text",
                 text: lineSpan
               }
             ]
@@ -82,7 +97,17 @@ export const createIssue = async (title, description, filePathName, selectedProj
             content: [
               {
                 type: "text",
-                text: `Tagged code: ${selectedText}`
+                text: "Tagged Code: ",
+                marks: [{ type: "strong" }]
+              },
+            ]
+          },
+          {
+            type: "codeBlock",
+            content: [
+              {
+                type: "text",
+                text: selectedText
               }
             ]
           }
@@ -95,12 +120,12 @@ export const createIssue = async (title, description, filePathName, selectedProj
         key: selectedProject.label
       },
       fixVersions: [
-        {"name":"retainer"}
+        {"name":"via_cherrybomb"}
       ],
       summary: title,
       description: formattedDescription,
       issuetype: {
-        name: 'Bug' 
+        name: 'Task' 
       },
       labels: [
         'tech_debt',
