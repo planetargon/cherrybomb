@@ -8,7 +8,6 @@ function getWebviewContent(data: {
 	lineSpan: string;
 	jiraProjectKeys: Array<{ label: string; description: string }>;
   }): string {
-	// Serialize the initial data so it can be used inside the webview.
 	const initialData = JSON.stringify(data);
 	return `<!DOCTYPE html>
 <html lang="en">
@@ -118,8 +117,8 @@ export function activate(context: vscode.ExtensionContext) {
 		const filePathName = path.join(path.basename(folderPath), relativePath);
 
 		const panel = vscode.window.createWebviewPanel(
-			'tagTechDebtForm', // Unique identifier for this webview type.
-			'Tag Technical Debt', // Title displayed on the panel tab.
+			'tagTechDebtForm', 
+			'Tag Technical Debt',
 			vscode.ViewColumn.One,
 			{
 			  enableScripts: true,
@@ -131,7 +130,7 @@ export function activate(context: vscode.ExtensionContext) {
 			selectedText,
 			filePathName,
 			lineSpan,
-			jiraProjectKeys // Expecting an array of objects with properties like 'label' and 'description'
+			jiraProjectKeys
 		  };
 
 		panel.webview.html = getWebviewContent(initialData);
@@ -140,9 +139,7 @@ export function activate(context: vscode.ExtensionContext) {
 			async message => {
 			  switch (message.command) {
 				case 'submit':
-				  // The webview sends back the selected project, title, and description.
 				  const { selectedProject, title, description } = message.data;
-				  // Trigger your issue creation function with the collected data.
 				  try {
 					await createIssue(title, description, filePathName, selectedProject, selectedText, lineSpan);
 					vscode.window.showInformationMessage('Issue created successfully!');
@@ -150,7 +147,6 @@ export function activate(context: vscode.ExtensionContext) {
 					vscode.window.showErrorMessage('Error creating issue. See console for details.');
 					console.error(error);
 				  }
-				  // Close the webview.
 				  panel.dispose();
 				  break;
 			  }
