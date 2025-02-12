@@ -36,7 +36,11 @@
 * Visual Studio Code (version 1.70.0 or higher recommended)
 * Node.js and npm installed
 * A Jira account with API access (Jira Cloud is recommended)
+* The VS Code Extension Manager installed
 
+    ```
+    npm install -g vsce
+    ```
 ### Installation
 
 1. Clone the Repository:
@@ -60,6 +64,13 @@
     JIRA_API_TOKEN=your-jira-api-token
     ```
 
+    - Replace `your-jira-instance` in the JIRA_DOMAIN variable with your unique company or personal Jira instance name, e.g., `https://cherrybomb.atlassian.net`.
+    - Ensure the email you are using is the same as the one you use to log in to your Jira instance, e.g., `ben@cherrybomb.com`.
+    - To generate an API token, visit [https://id.atlassian.com/manage-profile/security/api-tokens](https://id.atlassian.com/manage-profile/security/api-tokens), then click "Create API token".
+
+        - Give your new token a unique name that is obvious to you, such as `cherrybomb`.
+        - Set the expiration date for as long as you expect to use the extension. (Note: Jira tokens can last no longer than one year.)
+
 4. Compile the Extension (if using TypeScript):
     ```
     npm run compile
@@ -74,12 +85,13 @@
     ```
     npx vsce package
     ```
-    This creates a .vsix file (e.g., `cherrybomb`-0.0.1.vsix).
+    This creates a .vsix file (e.g., `cherrybomb`-0.0.1.vsix) in your root directory.
 
 6. Install the VSIX File in VS Code:
 
 * Open VS Code.
-* Open the Command Palette (`Ctrl+Shift+P` or `Cmd+Shift+P` on macOS) and select **Extensions: Install from VSIX…**.
+* Open the Command Palette (`Ctrl+Shift+P` or `Cmd+Shift+P` on macOS) or select the Extensions icon in the left sidebar.
+From the `…` menu, select *Install from VSIX…*
 * Browse to and select the generated .vsix file.
 
     Alternatively, you can drag and drop the .vsix file onto the VS Code window.
